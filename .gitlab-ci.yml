@@ -1,0 +1,30 @@
+stages:
+  - build
+  - test
+
+compile server:
+  image: mcr.microsoft.com/dotnet/sdk:5.0
+  stage: build
+  only:
+    - merge_requests
+  script:
+    - cd server
+    - dotnet build
+  artifacts:
+    paths:
+      - bin/
+  when: always
+
+test server:
+  image: mcr.microsoft.com/dotnet/sdk:5.0
+  stage: test
+  only:
+    - merge_requests
+  script:
+    - cd server
+    - dotnet test /p:CollectCoverage=true
+  artifacts:
+    when: always
+    paths:
+      - ./**/*test-result.xml
+      - ./**/*coverage.json
